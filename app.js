@@ -8,10 +8,13 @@ all.forEach(ele => {
 
 
 function checkfun(){
-    if(this.classList.contains('clear')||this.classList.contains('del')){
+    if(this.classList.contains('clear')){
         first_div.innerHTML=0;
         second_div.innerHTML="";
         point=0;
+    }
+    else if(this.classList.contains('del')){
+        delcontent();
     }
     else if(this.classList.contains('operator')){
         addoperator(this.innerHTML);
@@ -22,6 +25,31 @@ function checkfun(){
     }
     else
     addcontent(this.innerHTML);
+}
+
+function delcontent(){
+    var str=second_div.innerHTML;
+    if(str.length==0){
+        first_div.innerHTML=0;
+        return;
+    }
+    else{
+        str=str.slice(0,str.length-1);
+        second_div.innerHTML=str;
+        for(var i=str.length-1;i>=0;i--){
+            if(str[i]=='÷'||str[i]=='/'||str[i]=='-'||str[i]=='+'||str[i]=='*'||str[i]=='%'){
+                point=0;
+                evaluate(second_div.innerHTML);
+                return;
+            }
+            if(str[i]=='.'){
+                point=1;
+                evaluate(second_div.innerHTML);
+                return;
+            }
+        }
+    }
+    
 }
 
 function addoperator(operand){
@@ -71,7 +99,7 @@ function addcontent(val){
 function evaluate(exp){
    exp=exp.replace(/÷/g,'/');   
     try{
-    if(/[+*/-]/.test(exp))
+    if(/[+*%/-]/.test(exp))
         first_div.innerHTML=eval(exp);
         return true;
     }
@@ -84,6 +112,7 @@ function evaluate(exp){
             first_div.innerHTML="Expression Error";
             return false;    
         }
+
     }
     
 }
@@ -91,7 +120,9 @@ function evaluate(exp){
 function equalize(){
     var exp=second_div.innerHTML;
     exp=exp.replace(/÷/g,'/'); 
-    if(/[+*/-]/.test(exp)&&first_div.innerHTML!=""){
+    if(/[+*%/-]/.test(exp)&&first_div.innerHTML!=""){
+        if(first_div.classList.contains('firstadd'))
+        return;
         first_div.classList.add('firstadd');
         second_div.classList.add('secondadd');
         setTimeout(rem,300);
