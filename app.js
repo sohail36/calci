@@ -1,7 +1,16 @@
 var second_div=document.querySelector('.second');
 var first_div=document.querySelector('.first');
 var point=0;
+var bol=true;
 var all=document.querySelectorAll('.button');
+
+if(bol)
+document.querySelector('.del').addEventListener('click',checkfun);
+
+if(!bol)
+document.querySelector('.del').removeEventListener('click',fun);
+
+
 all.forEach(ele => {
     ele.addEventListener('click',checkfun);
 });
@@ -28,6 +37,7 @@ function checkfun(){
 }
 
 function delcontent(){
+   
     var str=second_div.innerHTML;
     if(str.length==0){
         first_div.innerHTML=0;
@@ -48,12 +58,15 @@ function delcontent(){
                 return;
             }
         }
+        point=0;
     }
     
 }
 
 function addoperator(operand){
+    
     point=0;
+    document.querySelector('.del').addEventListener('click',checkfun);
     var str=second_div.innerHTML;
     var i=str.length-1;
     if(str[i]=='-' && str.length>2){
@@ -88,6 +101,8 @@ function addoperator(operand){
 }
 
 function addcontent(val){
+    
+    document.querySelector('.del').addEventListener('click',checkfun);
     if(val=='.'&&point>0)
     return;
     if(val=='.')
@@ -97,7 +112,8 @@ function addcontent(val){
 }
 
 function evaluate(exp){
-   exp=exp.replace(/÷/g,'/');   
+    
+    exp=exp.replace(/÷/g,'/');   
     try{
     if(/[+*%/-]/.test(exp))
         first_div.innerHTML=eval(exp);
@@ -112,6 +128,8 @@ function evaluate(exp){
             first_div.innerHTML="Expression Error";
             return false;    
         }
+        else if(e.message=="Unexpected end of input")
+        first_div.innerHTML="0";
 
     }
     
@@ -125,14 +143,19 @@ function equalize(){
         return;
         first_div.classList.add('firstadd');
         second_div.classList.add('secondadd');
+        document.querySelector('.del').removeEventListener('click',checkfun);
         setTimeout(rem,300);
     }
 }
+
+
 function rem(){
     second_div.classList.remove('secondadd');
     first_div.classList.remove('firstadd');
     second_div.innerHTML=first_div.innerHTML;
     first_div.innerHTML="";
+    if(second_div.innerHTML.includes('.'))
+    point=1;
     
 }
 
